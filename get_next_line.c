@@ -1,8 +1,10 @@
 #include <fcntl. h>
 #include <unistd.h>
+#include "get_next_line.h"
 
 char *get_next_line(int fd)
 {
+	int fd;
 	char *buffer;
 	static char *stash;
 
@@ -14,12 +16,37 @@ char *get_next_line(int fd)
 		return (NULL);
 	buffer = malloc(BUFFER_SIZE + 1);	
 	
-	
-		SIEMPRE LIBERAR MEMORIA POR CADA MALLOC
+	fd = size_t read(int fd, void *buffer, size_t BUFFER_SIZE)
+	if (fd < 0)
+	{
+		free(buffer);
+		return(NULL);
+	}
+	if (fd == 0)
+	{
+		
+		return (stash);
+	}
 
 
-	 ssize_t read( int fd, void *buffer, size_t BUFFER_SIZE)
-	 {
+	int close(int fd);
+	return(line);
+}
+
+	✔️ get_next_line()
+
+
+concatena con stash
+
+llama a funciones auxiliares
+
+devuelve la línea final
+
+
+
+size_t read(int fd, void *buffer, size_t BUFFER_SIZE)
+{
+		
 ✔️ A) un número > 0
 
 Significa: leyó esa cantidad de bytes (pueden ser menos de BUFFER_SIZE).
@@ -32,14 +59,9 @@ No hay más datos.
 Si te quedaba algo en la stash → devolvés eso.
 Si no → devolvés NULL.
 
-✔️ C) -1
 
-Significa: error de lectura.
-En GNL:
-→ tenés que liberar lo necesario y devolver NULL.
 	 }
 	        
-    ssize_t read(size_t count; int fd, void buf[count], size_t count)
 	
 	 stash 
 	 cortar_stash(stash):
@@ -68,8 +90,7 @@ resto = substr(stash, despues_del_n);
 free(stash);
 stash = resto;
 
-	int close(int fd)
-}
+
 --
 [buffer] → malloc → leer → concatenar → free
 
@@ -90,3 +111,52 @@ si EOF y stash != NULL:
 
 si EOF y stash == NULL:
     return NULL
+
+
+
+✔️ read_and_append_to_stash()
+
+Una función interna que hace:
+
+leer del fd
+
+llenar buffer
+
+concatenar al stash
+
+parar cuando encuentra un \n en stash o llega EOF
+
+char *extract_line(char *stash)
+{
+	char *new_line;
+	size_t len;
+	unsigned int start;
+
+	while (*stash != \0)
+	{
+		if (*stash != '\n')
+			return (stash);
+		else
+		{
+			len = ft_strlen(stash);
+			start = ft_strchr(stash, '\n');
+			new_line = ft_substr(stash, start, len);
+			return (new_line);
+		}
+		stash++;
+	}
+	return(new_line)
+}
+
+
+✔️ update_stash_after_line()
+
+Hace:
+
+crear una nueva stash con lo que quedó después del \n
+
+liberar la stash vieja
+
+asignar la nueva
+
+		SIEMPRE LIBERAR MEMORIA POR CADA MALLOC
