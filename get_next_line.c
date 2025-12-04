@@ -1,162 +1,132 @@
-#include <fcntl. h>
+#include <fcntl.h>
 #include <unistd.h>
 #include "get_next_line.h"
 
 char *get_next_line(int fd)
 {
-	int fd;
-	char *buffer;
-	static char *stash;
+    static char *stash;
+    char      *line;
 
-
-	if(stash == NULL)
-		stash = malloc('\0');
-
-	if (fd < 0 || BUFFER_SIZE <= 0)
-		return (NULL);
-	buffer = malloc(BUFFER_SIZE + 1);	
+    if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
+        return (NULL);
+    stash = read_and_add_to_stash(stash, fd);
+    if (!stash)
+        return (NULL);
+    line = extract_line(stash); 
+    if (!line)
+        return (NULL);
+    stash = update_stash(stash); 
+    return(line);
+}	
 	
-	fd = size_t read(int fd, void *buffer, size_t BUFFER_SIZE)
-	if (fd < 0)
-	{
-		free(buffer);
-		return(NULL);
-	}
-	if (fd == 0)
-	{
-		
-		return (stash);
-	}
 
 
-	int close(int fd);
-	return(line);
-}
-
-	✔️ get_next_line()
-
-
-concatena con stash
-
-llama a funciones auxiliares
-
-devuelve la línea final
-
-
-
-size_t read(int fd, void *buffer, size_t BUFFER_SIZE)
-{
-		
-✔️ A) un número > 0
-
-Significa: leyó esa cantidad de bytes (pueden ser menos de BUFFER_SIZE).
-Ejemplo: pedís 10, pero devuelve 4. Y eso está bien.
-
-✔️ B) 0
-
-Significa: EOF (End Of File).
-No hay más datos.
-Si te quedaba algo en la stash → devolvés eso.
-Si no → devolvés NULL.
-
-
-	 }
-	        
-	
-	 stash 
-	 cortar_stash(stash):
-    - buscar \n
-    - si no hay -> no cortar, volver a leer
-    - si hay:
-          * hacer "line" con todo hasta \n
-          * hacer "resto" con todo después
-          * stash = resto
-          * return line
-	 Ejemplo:
-
-stash = "Hola\nMundo"
-
-→ devolvés "Hola\n"
-→ stash ahora es "Mundo"
-
-stash = ft_strjoin(stash, buffer)
-
-char *nuevo = strjoin(stash_antigua, buffer);
-free(stash_antigua);
-stash = nuevo;
-
---
-resto = substr(stash, despues_del_n);
-free(stash);
-stash = resto;
-
-
---
-[buffer] → malloc → leer → concatenar → free
-
-[stash antigua] → strjoin → free → [stash nueva]
-
-si hay '\n':
-    line = malloc
-    resto = malloc
-    free(stash)  
-    stash = resto  
-    return line
-
-si EOF y stash != NULL:
-    line = malloc(stash)
-    free(stash)
-    stash = NULL
-    return line
-
-si EOF y stash == NULL:
-    return NULL
-
-
-
-✔️ read_and_append_to_stash()
-
-Una función interna que hace:
-
-leer del fd
-
-llenar buffer
-
-concatenar al stash
-
-parar cuando encuentra un \n en stash o llega EOF
-
-char *extract_line(char *stash)
+char *extract_line(char *stash) // OK
 {
 	char *new_line;
 	size_t len;
-	unsigned int start;
+	char *start;
 
-	while (*stash != \0)
-	{
-		if (*stash != '\n')
-			return (stash);
-		else
-		{
-			len = ft_strlen(stash);
-			start = ft_strchr(stash, '\n');
-			new_line = ft_substr(stash, start, len);
-			return (new_line);
-		}
-		stash++;
-	}
-	return(new_line)
+	if (stash == NULL || stash[0] == '\0')
+		return (NULL);
+	start = ft_strchr(stash, '\n');
+	if (start != NULL) // si start (el que busca \n) encuentra un salto de linea (o sea que "fallo strchr")
+		len = (start - stash) + 1; // +1 para el salto de linea - stash apunta a [0] de si mismo
+	else
+		len = ft_strlen(stash); // si strchr no encontró salto de linea que la longitud sea el total del stash
+	new_line = ft_substr(stash, 0, len); // substr ya asigna memoria y ya le agrega el caracter nulo al final
+	if (new_line == NULL) 
+        return (NULL);
+	return (new_line);
 }
 
 
-✔️ update_stash_after_line()
+char	*update_stash(char *stash) // actualiza el stash despues de extraer la linea
+{
+	char	*start_of_rest;
+	char	*new_stash;
+	size_t	start_index;
+	size_t	len_of_rest;
 
-Hace:
+	// 1. Encontrar el salto de línea.
+	start_of_rest = ft_strchr(stash, '\n');
 
-crear una nueva stash con lo que quedó después del \n
+	// 2. Caso: No hay salto de línea (se extrajo la última línea).
+	if (!start_of_rest)
+	{
+		free(stash); // ¡LIBERAR MEMORIA!
+		return (NULL);
+	}
 
-liberar la stash vieja
+	// 3. Calcular la posición de inicio para la nueva subcadena.
+	// La nueva cadena comienza 1 byte después del '\n'.
+	start_index = (start_of_rest - stash) + 1;
 
-asignar la nueva
+	// 4. Calcular la longitud restante de la cadena.
+	len_of_rest = ft_strlen(stash) - start_index;
 
-		SIEMPRE LIBERAR MEMORIA POR CADA MALLOC
+	// 5. Crear la nueva subcadena.
+	new_stash = ft_substr(stash, start_index, len_of_rest);
+	
+	// 6. Manejar error de asignación de memoria (si falla malloc dentro de ft_substr).
+	if (!new_stash)
+	{
+		free(stash);
+		return (NULL);
+	}
+
+	// 7. Liberar el stash original y devolver el nuevo.
+	free(stash); // ¡LIBERAR MEMORIA!
+	return (new_stash);
+}
+
+char *read_and_add_to_stash(char *stash, int fd)
+{
+    ssize_t num; // cantidad de bytes leídos
+    char *buffer;
+    char *temp;
+
+    // Inicializar stash si es NULL
+    if (!stash)
+    {
+        stash = (char *)malloc(1);
+        if (!stash)
+            return (NULL);
+        stash[0] = '\0';
+    }
+
+    buffer = (char *)malloc(BUFFER_SIZE + 1); // +1 para '\0'
+    if (!buffer)
+        return (NULL);
+
+    while (!ft_strchr(stash, '\n'))
+    {
+        num = read(fd, buffer, BUFFER_SIZE);
+
+        if (num < 0) // error de lectura
+        {
+            free(buffer);
+            return (NULL); // ❌ No liberamos stash aquí
+        }
+        else if (num == 0) // EOF
+        {
+            break;
+        }
+
+        buffer[num] = '\0';
+        temp = stash;
+        stash = ft_strjoin(temp, buffer);
+        if (!stash)
+        {
+            free(temp);
+            free(buffer);
+            return (NULL);
+        }
+        free(temp);
+    }
+
+    free(buffer);
+    return (stash);
+}
+
+

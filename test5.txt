@@ -1,0 +1,2 @@
+Esta es una linea muy larga que sirve para probar buffers pequeños.
+Segunda linea larga para seguir probando.

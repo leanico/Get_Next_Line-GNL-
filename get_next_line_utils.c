@@ -35,7 +35,8 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	size_t	len2;
 	size_t	len3;
 	char	*s3;
-
+	if (s1 == NULL || s2 == NULL)
+		return (NULL);
 	len1 = ft_strlen(s1);
 	len2 = ft_strlen(s2);
 	len3 = len1 + len2;
@@ -72,4 +73,22 @@ char	*ft_substr(const char *s, unsigned int start, size_t len)
 	ft_memcpy(sub, s + start, len);
 	sub[len] = '\0';
 	return (sub);
+}
+void	*ft_memcpy(void *dst, const void *src, size_t n)
+{
+	unsigned char		*d;
+	const unsigned char	*s;
+	size_t				i;
+
+	if (!dst && !src)
+		return (NULL);
+	i = 0;
+	d = (unsigned char *)dst;
+	s = (const unsigned char *)src;
+	while (i < n)
+	{
+		d[i] = s[i];
+		i++;
+	}
+	return (dst);
 }
