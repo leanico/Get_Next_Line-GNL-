@@ -14,7 +14,12 @@ char *get_next_line(int fd)
         return (NULL);
     line = extract_line(stash); 
     if (!line)
-        return (NULL);
+    {
+		free (stash);
+		stash = NULL;
+		return (NULL);
+	}    
+	
     stash = update_stash(stash); 
     return(line);
 }	
