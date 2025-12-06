@@ -1,4 +1,3 @@
-
 #include "get_next_line.h"
 
 size_t	ft_strlen(const char *str)
@@ -35,6 +34,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	size_t	len2;
 	size_t	len3;
 	char	*s3;
+
 	if (s1 == NULL || s2 == NULL)
 		return (NULL);
 	len1 = ft_strlen(s1);
@@ -74,6 +74,7 @@ char	*ft_substr(const char *s, unsigned int start, size_t len)
 	sub[len] = '\0';
 	return (sub);
 }
+
 void	*ft_memcpy(void *dst, const void *src, size_t n)
 {
 	unsigned char		*d;
