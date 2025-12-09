@@ -20,5 +20,6 @@ char	*get_next_line(int fd);
 char	*extract_line(char *stash);
 char	*update_stash(char *stash);
 char	*read_and_add_to_stash(char *stash, int fd);
+char	*check_error(char **stash);
 
 #endif

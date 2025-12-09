@@ -27,17 +27,64 @@ char	*get_next_line(int fd)
 	return (line);
 }
 
+char	*read_and_add_to_stash(char *stash, int fd)
+{
+	ssize_t	num;
+	char	*temp;
+	char	*buffer;
+
+	buffer = check_error(&stash);
+	if (!buffer)
+		return (NULL);
+	while (!ft_strchr(stash, '\n'))
+	{
+		num = read(fd, buffer, BUFFER_SIZE);
+		if (num < 0)
+			return (free(buffer), free(stash), NULL);
+		if (num == 0)
+			break ;
+		buffer[num] = '\0';
+		temp = stash;
+		stash = ft_strjoin(temp, buffer);
+		if (!stash)
+			return (free(temp), free(buffer), NULL);
+		free(temp);
+	}
+	free(buffer);
+	return (stash);
+}
+
+char	*check_error(char **stash)
+{
+	char	*buffer;
+
+	if (!*stash)
+	{
+		*stash = malloc(1);
+		if (!*stash)
+			return (NULL);
+		(*stash)[0] = '\0';
+	}
+	buffer = malloc(BUFFER_SIZE + 1);
+	if (!buffer)
+	{
+		free(*stash);
+		*stash = NULL;
+	}
+	return (buffer);
+}
+
 char	*extract_line(char *stash)
 {
 	char	*new_line;
 	size_t	len;
-	char	*start;
+	char	*line_break;
 
 	if (stash == NULL || stash[0] == '\0')
 		return (NULL);
-	start = ft_strchr(stash, '\n');
-	if (start != NULL)
-		len = (start - stash) + 1;
+	line_break = ft_strchr(stash, '\n');
+	if (line_break != NULL)
+		len = (line_break - stash) + 1;
 	else
 		len = ft_strlen(stash);
 	new_line = ft_substr(stash, 0, len);
@@ -69,51 +116,4 @@ char	*update_stash(char *stash)
 	}
 	free(stash);
 	return (new_stash);
-}
-
-char	*check_error(char **stash)
-{
-	char	*buffer;
-
-	if (!*stash)
-	{
-		*stash = malloc(1);
-		if (!*stash)
-			return (NULL);
-		(*stash)[0] = '\0';
-	}
-	buffer = malloc(BUFFER_SIZE + 1);
-	if (!buffer)
-	{
-		free(*stash);
-		*stash = NULL;
-	}
-	return (buffer);
-}
-
-char	*read_and_add_to_stash(char *stash, int fd)
-{
-	ssize_t	num;
-	char	*temp;
-	char	*buffer;
-
-	buffer = check_error(&stash);
-	if (!buffer)
-		return (NULL);
-	while (!ft_strchr(stash, '\n'))
-	{
-		num = read(fd, buffer, BUFFER_SIZE);
-		if (num < 0)
-			return (free(buffer), free(stash), NULL);
-		if (num == 0)
-			break ;
-		buffer[num] = '\0';
-		temp = stash;
-		stash = ft_strjoin(temp, buffer);
-		if (!stash)
-			return (free(temp), free(buffer), NULL);
-		free(temp);
-	}
-	free(buffer);
-	return (stash);
 }
