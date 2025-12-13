@@ -148,3 +148,33 @@ Actualiza el "stash" eliminando la parte que ya ha sido leída.
 
 **Devuelve:**
 - El nuevo "stash" con los datos restantes.
+
+---
+
+# `main`
+
+- en la misma carpeta donde esté el main tiene que haber un .txt, desde ahí se va a extraer la info para GNL
+- lo de O_RDONLY es para que abra el archivo solo en modo lectura
+- Mientras haya una 'line' el while se va a ejecutar
+- Al final de cada vuelta el while va a liberar la memoria de 'line'
+- se cierra el fd que habia sido abierto por open
+
+int main(void)
+{
+    int fd;
+    char *line;
+
+    fd = open("test1.txt", O_RDONLY);
+    while ((line = get_next_line(fd)) != NULL)
+    {
+        printf("LINE: %s", line);
+        free(line);
+    }
+    close(fd);
+}
+
+--
+
+# compilación
+
+- cc -Wall -Wextra -Werror -D BUFFER_SIZE=xxx get_next_line.c get_next_line_utils.c main.c
