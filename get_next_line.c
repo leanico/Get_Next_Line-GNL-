@@ -66,7 +66,7 @@ char	*read_and_add_to_stash(char *stash, int fd)
 	return (stash);
 }
 
-char *init_stash_and_buffer(char **stash);
+char *init_stash_and_buffer(char **stash)
 {
 	char	*buffer;
 
@@ -129,3 +129,4 @@ char	*update_stash(char *stash)
 	free(stash);
 	return (new_stash);
 }
+
