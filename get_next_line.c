@@ -45,7 +45,7 @@ char	*read_and_add_to_stash(char *stash, int fd)
 	char	*temp;
 	char	*buffer;
 
-	buffer = check_error(&stash);
+	buffer = init_stash_and_buffer(&stash);
 	if (!buffer)
 		return (NULL);
 	while (!ft_strchr(stash, '\n'))
@@ -66,7 +66,7 @@ char	*read_and_add_to_stash(char *stash, int fd)
 	return (stash);
 }
 
-char	*check_error(char **stash)
+char *init_stash_and_buffer(char **stash);
 {
 	char	*buffer;
 
