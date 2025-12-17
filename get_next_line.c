@@ -19,12 +19,8 @@ char	*get_next_line(int fd)
 	static char	*stash;
 	char		*line;
 
-	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
-	{
-		free(stash);
-		stash = NULL;
+	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	}
 	stash = read_and_add_to_stash(stash, fd);
 	if (!stash)
 		return (NULL);
@@ -129,4 +125,5 @@ char	*update_stash(char *stash)
 	free(stash);
 	return (new_stash);
 }
+
 
