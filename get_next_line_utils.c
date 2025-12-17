@@ -17,7 +17,7 @@ size_t	ft_strlen(const char *str)
 	int	i;
 
 	i = 0;
-	while (str [i] != '\0')
+	while (str[i] != '\0')
 	{
 		i++;
 	}
@@ -105,3 +105,4 @@ void	*ft_memcpy(void *dst, const void *src, size_t n)
 	}
 	return (dst);
 }
+
